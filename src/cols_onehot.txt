@@ -1,0 +1,7 @@
+addr_state
+term
+application_type
+disbursement_method
+home_ownership
+purpose
+verification_status
