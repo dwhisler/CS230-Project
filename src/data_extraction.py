@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import tensorflow as tf
 
 
 def sampling_k_elements(group, k):
@@ -7,14 +8,18 @@ def sampling_k_elements(group, k):
         return group
     return group.sample(k)
 
-def get_loan_data(filename, cols_filename, n):
-    df = pd.read_csv(filename, nrows=n)
+def get_loan_data(filename, cols_filename, n, equalize=True):
+    if n == 'all':
+        df = pd.read_csv(filename)
+    else:
+        df = pd.read_csv(filename, nrows=n)
 
     df = df.loc[df['loan_status'].isin(['Default', 'Fully Paid', 'Charged Off'])] #only use datapoints with relevant labels
     label_map = {'Default': 1, 'Charged Off': 1,'Fully Paid':0}
     df = df.applymap(lambda s: label_map.get(s) if s in label_map else s)
-    df = df.groupby('loan_status').apply(sampling_k_elements, min(df['loan_status'].value_counts())).reset_index(drop=True) # balance dataset in labels
-    labels = df['loan_status']
+
+    if equalize:
+        df = df.groupby('loan_status').apply(sampling_k_elements, min(df['loan_status'].value_counts())).reset_index(drop=True) # balance dataset in labels
 
     with open(cols_filename, 'r') as f:
         cols = f.readlines()
@@ -34,12 +39,14 @@ def get_loan_data(filename, cols_filename, n):
     df = df.join(one_hot)
     df = df.drop(columns=cols_onehot)
 
-    return df, labels
+    labels = df.pop('loan_status')
 
+    return df, labels
 
 if __name__ == '__main__':
     filename = "../data/accepted_2007_to_2018Q4.csv"
     cols_filename = "cols_all_test.txt"
-    X, y = get_loan_data(filename, cols_filename, 10000)
+    X, y = get_loan_data(filename, cols_filename, 1000000)
 
-    print(y.value_counts())
+    for x in X.loc[0,:]:
+        print(x)
