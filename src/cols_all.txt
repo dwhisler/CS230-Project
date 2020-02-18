@@ -10,6 +10,7 @@ fico_range_high
 funded_amnt
 installment
 int_rate
+loan_status
 max_bal_bc
 mo_sin_old_il_acct
 mo_sin_old_rev_tl_op
