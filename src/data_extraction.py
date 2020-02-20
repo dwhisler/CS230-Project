@@ -35,11 +35,12 @@ def get_loan_data(filename, cols_filename, n, equalize=True):
         cols_onehot = f.readlines()
         cols_onehot = [col.strip() for col in cols_onehot]
 
-    one_hot = pd.get_dummies(df[cols_onehot])
-    df = df.join(one_hot)
-    df = df.drop(columns=cols_onehot)
 
     labels = df.pop('loan_status')
+    one_hot = pd.get_dummies(df[cols_onehot])
+    df = df.drop(columns=cols_onehot)
+    df = (df - df.mean())/df.std() # normalize numeric columns before joining one hots
+    df = df.join(one_hot)
 
     return df, labels
 
