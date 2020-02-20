@@ -8,7 +8,7 @@ def sampling_k_elements(group, k):
         return group
     return group.sample(k)
 
-def get_loan_data(filename, cols_filename, n, equalize=True):
+def get_loan_data(filename, cols_filename, n, equalize=False):
     if n == 'all':
         df = pd.read_csv(filename)
     else:
