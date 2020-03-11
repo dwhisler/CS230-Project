@@ -41,7 +41,6 @@ def get_loan_data(filename, cols_filename, n, equalize=False):
     df = df.drop(columns=cols_onehot)
     df = (df - df.mean())/df.std() # normalize numeric columns before joining one hots
     df = df.join(one_hot)
-
     return df, labels
 
 if __name__ == '__main__':
